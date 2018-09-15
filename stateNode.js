@@ -72,24 +72,27 @@ module.exports = StateNode;
 
 // AppState.initializeModifiers({
 //   name: {
-//     updateName: (currentState, payload) => {
-//       update(payload);
+//     updateName: (current, payload) => {
+//       return payload + current;
 //     },
-//     resetName: (currentState, payload) => {
-//       update(null);
+//     resetName: (current, payload) => {
+//       return null;
 //     }
 //   },
 //   age: {
-//     incrementAge: (currentState, payload) => {
-//       update(currentState + 1);
+//     incrementAge: (current, payload) => {
+//       return current + 1;
 //     },
-//     decrementAge: (currentState, payload) => {
-//       update(currentState - 1);
+//     decrementAge: (current, payload) => {
+//       return current - 1;
 //     }
 //   },
 //   cart: {
-//     incrementShirts: (currentState, payload, index) => {
-//       update(payload);
-//     }
+    // incrementShirts: (current, index, payload) => {
+    //   return {
+    //     value: ++current,
+    //     index: index
+    //   }
+    // }
 //   }
 // });
