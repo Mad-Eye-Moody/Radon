@@ -85,6 +85,9 @@ module.exports = StateNode;
 //   cart: {
 //     incrementShirts: (current, index, payload) => {
 //       return ++current;
+//     },
+//     addItem: (current, payload) => {
+//       return current.push(payload);
 //     }
 //   }
 // });

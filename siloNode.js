@@ -1,11 +1,10 @@
 class SiloNode {
-  constructor(val, parent = null, modifiers = {}, isAnObject = false) {
+  constructor(val, parent = null, modifiers = {}) {
     this._value = val;
     this._modifiers = modifiers;
     this._queue = [];
     this._subscribers = [];
     this._parent = parent; // circular silo node
-    this._isAnObject = isAnObject; // controls the type of middleware
 
     // bind
     this.linkModifiers = this.linkModifiers.bind(this);
@@ -30,10 +29,6 @@ class SiloNode {
 
   get parent() {
     return this._parent;
-  }
-
-  get isAnObject() {
-    return this._isAnObject;
   }
 
   runModifiers() {
@@ -64,8 +59,9 @@ class SiloNode {
       const modifier = stateModifiers[modifierKey];
 
       if (typeof modifier !== 'function' ) throw new TypeError(); 
+
       // adds middleware that will affect the value of this node
-      else if (!this.isAnObject) {
+      else if (modifier.length <= 2) {
         // wrap the dev's modifier function so we can pass the current node value into it
         const linkedModifier = async (payload) => await modifier(that.value, payload); 
 
@@ -77,8 +73,9 @@ class SiloNode {
           that.runQueue();
         }
       }
-      // adds middleware that will affect the value of a child node
-      else if (this.isAnObject) {
+
+      // adds middleware that will affect the value of a child node of index
+      else if (modifier.length > 2) {
         // wrap the dev's modifier function so we can pass the current node value into it
         const linkedModifier = async (index, payload) => await modifier(that.value[index].value, index, payload); 
 
