@@ -1,6 +1,6 @@
 // import state class for instanceof check
 const StateNode = require('./stateNode.js');
-const SiloNode = require('./SiloNode.js');
+const SiloNode = require('./siloNode.js');
 
 // ==================> SILO TESTING <=================== \\
 
@@ -10,7 +10,7 @@ const SiloNode = require('./SiloNode.js');
 // AppState.initializeState({
 //   name: 'Han',
 //   age: 25,
-//   cart: {one:[1,2,3], two:2}
+//   cart: {one:1, two:2}
 // })
 
 // AppState.initializeModifiers({
@@ -41,7 +41,7 @@ const SiloNode = require('./SiloNode.js');
 
 // ButtState.initializeState({
 //   butt: 'Butt'
-})
+// })
 
 //==================> SILO TESTING ENDED <===================\\
 
@@ -84,20 +84,10 @@ const silo = {};
 // IMPORTANT nested object nodes are named after their parent and the key: ex: cart_one
 function handleNestedObject(objName, obj, parent) {
   const objChildren = {};
-  let type, keys;
-
-  // determine if array or other object
-  if (Array.isArray(obj.value)) {
-    keys = obj.value;
-    type = 'ARRAY';
-  } else {
-    keys = Object.keys(obj.value);
-    type = 'OBJECT'
-  }
-
-  const node = new SiloNode(objChildren, parent, obj.modifiers, type);
+  const node = new SiloNode(objChildren, parent, obj.modifiers, true);   // the true argument indicates that this is a parent object node
+  const keys = Array.isArray(obj.value) ? obj : Object.keys(obj.value);
   
-  if (Array.isArray(obj.value) && keys.length > 0) {
+  if (Array.isArray(obj.value) && obj.value.length > 0) {
     obj.value.forEach((val, i) => {
       if (typeof val === 'object') objChildren[`${objName}_${i}`] = handleNestedObject(`${objName}_${i}`, {value: val}, node);
       else objChildren[`${objName}_${i}`] = new SiloNode(val, node);
@@ -114,10 +104,10 @@ function handleNestedObject(objName, obj, parent) {
   return node;
 }
 
-// combineNodes takes all of the StateNodes created by the developer. It then creates SiloNodes from the
-// StateNodes and organizes them into a single nested object, the silo
+// combineNodes takes all of the stateNodes created by the developer. It then creates SiloNodes from the
+// stateNodes and organizes them into a single nested object, the silo
 
-combineNodes = (...args) => {
+function combineNodes (...args) {
   // you called this function without passing stuff? Weird
   if (args.length === 0) return;
 
@@ -158,7 +148,7 @@ combineNodes = (...args) => {
     hashTable[nodeName].forEach(child => {
 
       const nodeVal = {};
-      allChildren[child.name] = new SiloNode(nodeVal, parent, {}, 'NESTEDSTATE');
+      allChildren[child.name] = new SiloNode(nodeVal, parent);
       const thisStateNode = child;
       const thisSiloNode = allChildren[child.name];
       const stateObj = child.state;
@@ -191,11 +181,13 @@ combineNodes = (...args) => {
   Object.keys(temp).forEach(key => {
     silo[key] = temp[key];
   });
+
+  console.log('SILO IN COMBINE', silo);
+
+  return silo;
 }
 
 // combineNodes(ButtState, NavState, AppState); // testing purposes
-// console.log(silo.AppState.value.NavState.value.ButtState.getState());
-// silo.AppState.value.NavState.value.ButtState.getState();
 
 // ==========> TESTS that calling a parent function will modify its child for nested objects <========== \\
 
@@ -207,7 +199,7 @@ combineNodes = (...args) => {
 
 // ==========> END TESTS that calling a parent function will modify its child for nested objects <========== \\
 
-silo.prototype.subscribe = (component, name) => {
+silo.subscribe = (component, name) => {
     if(!name && !component.prototype){
         throw Error('you cant use an anonymous function in subscribe without a name argument');
     } else if (!name && !!component.prototype){
@@ -215,12 +207,14 @@ silo.prototype.subscribe = (component, name) => {
     }
     
     const searchSilo = (head, name) => {
-        
+      console.log("HEAD", head);  
+
         let children;
         if(typeof head.value !== 'object') return null;
         else children = head.value;
 
         for(let i in children){
+          console.log(i, name);
             if(i === name){
                 return children[i]
             } else {
@@ -230,8 +224,8 @@ silo.prototype.subscribe = (component, name) => {
         }
     }
 
-    let foundNode = searchSilo(this, name);
-    foundNode.subscribers.push(component)
+    let foundNode = searchSilo(silo, name);
+    foundNode._subscribers.push(component)
     return foundNode;
     
     //if there's no name assume the name is component name + 'State'
@@ -241,6 +235,5 @@ silo.prototype.subscribe = (component, name) => {
 }
 
 module.exports = {
-  silo,
   combineNodes
 }
