@@ -1,6 +1,6 @@
 // import state class for instanceof check
-const StateNode = require('./stateNode.js');
-const SiloNode = require('./siloNode.js');
+import StateNode from './stateNode.js';
+import SiloNode from './siloNode.js';
 
 // ==================> SILO TESTING <=================== \\
 
@@ -125,7 +125,8 @@ function combineNodes(...args) {
   const hashTable = {};
   args.forEach(node => {
     // all nodes must be an instance of state node (must import state class)
-    if (!(node instanceof StateNode)) throw new Error('only state objects can be passed into combineNodes');
+    //console.log(node, node instanceof StateNode);
+    //if (!(node instanceof StateNode)) throw new Error('only state objects can be passed into combineNodes');
 
     if (node.parent === null) {
       // only one node can be the root
@@ -234,16 +235,28 @@ silo.subscribe = (component, name) => {
   }
 
   let foundNode;
-  for(let i in this){
-    if(this[i] instanceof SiloNode){
-      console.log(i);
-      foundNode = searchSilo(this[i], name)
+  for(let i in silo){
+    if(silo[i].constructor === SiloNode){
+      if(i === name) {
+        foundNode = silo[i];
+      } else {
+        foundNode = searchSilo(silo[i], name)
+      }
       if(!!foundNode){
         foundNode._subscribers.push(component)
+        if(typeof foundNode.value === 'object'){
+          for(let i in foundNode.value){
+            if(i.slice(-5) !== 'State'){
+              foundNode.value[i]._subscribers.push(component);
+            }
+          }
+        }
       }
     }
   }
+  
 
+  component(foundNode.getState());
   return foundNode;
 
     //if there's no name assume the name is component name + 'State'
@@ -252,4 +265,4 @@ silo.subscribe = (component, name) => {
     //add to its subscribers the component;
 }
 
-module.exports = combineNodes;
+export default combineNodes;
