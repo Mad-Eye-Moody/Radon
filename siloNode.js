@@ -79,10 +79,7 @@ class SiloNode {
   
         while (this.queue.length > 0) {
           this.value = await this.queue.shift()();
-          if (this.type !== 'PRIMITIVE') {
-            this.value = this.updateSilo();
-            this.runLinkModifiers(this.name);
-          }
+          if (this.type !== 'PRIMITIVE') this.value = this.updateSilo().value;
           this.notifySubscribers();
         }
 
@@ -122,10 +119,7 @@ class SiloNode {
         else objChildren[`${objName}_${key}`] = new SiloNode(obj.value[key], node);
       })
     }
-  
-    // method below created to ensure that all values have been added to the objChild before
-    // modifiers are linked (needed for objects)
-    node.runLinkModifiers(objName);
+
     node.value = objChildren;
     return node;
   }
@@ -205,7 +199,6 @@ class SiloNode {
 
   handleArray(name, obj) {
     const newArray = [];
-
     // loop through array indices currently stored as nodes
     Object.keys(obj.value).forEach((key, i) => {
       const childObj = obj.value[key];
@@ -230,18 +223,22 @@ class SiloNode {
       })
     }
 
-    Object.keys(currentNode.value).forEach(key => {
-      const node = currentNode.value[key];
-      if (node.type === 'OBJECT') state[key] = this.handleObject(key, node);
-      else if (node.type === 'ARRAY') state[key] = this.handleArray(key, node);
-      else if (node.type === 'PRIMITIVE') state[key] = node.value;
+    // getting children of objects is redundant
+    if (currentNode.type !== 'ARRAY' && currentNode.type !== 'OBJECT')
+      Object.keys(currentNode.value).forEach(key => {
+        const node = currentNode.value[key];
+        if (node.type === 'OBJECT') state[key] = this.handleObject(key, node);
+        else if (node.type === 'ARRAY') {
+          state[key] = this.handleArray(key, node);
+        }
+        else if (node.type === 'PRIMITIVE') state[key] = node.value;
 
-      if (node.modifiers) {
-        Object.keys(node.modifiers).forEach(modifier => {
-          state[modifier] = node.modifiers[modifier];
-        })
-      }
-    })
+        if (node.modifiers) {
+          Object.keys(node.modifiers).forEach(modifier => {
+            state[modifier] = node.modifiers[modifier];
+          })
+        }
+      })
 
     return state;
   }

@@ -13,8 +13,7 @@ const SiloNode = require('./SiloNode.js');
 
 // AppState.initializeState({
 //   name: 'Han',
-//   age: 25,
-//   cart: [{one: 1}]
+//   age: 25
 // })
 
 // AppState.initializeModifiers({
@@ -22,7 +21,17 @@ const SiloNode = require('./SiloNode.js');
 //     incrementAge: (current, payload) => {
 //       return current + payload;
 //     }
-//   },
+//   }
+// });
+
+// const NavState = new StateNode('NavState');
+// NavState.parent = 'AppState';
+
+// NavState.initializeState({
+//   cart: []
+// })
+
+// NavState.initializeModifiers({
 //   cart: {
 //     increment: (current, index, payload) => {
 //       return ++current;
@@ -33,13 +42,6 @@ const SiloNode = require('./SiloNode.js');
 //     }
 //   }
 // });
-
-// const NavState = new StateNode('NavState');
-// NavState.parent = 'AppState';
-
-// NavState.initializeState({
-//   nav: 'Nav'
-// })
 
 // const ButtState = new StateNode('ButtState');
 // ButtState.parent = 'NavState';
@@ -118,7 +120,7 @@ function handleNestedObject(objName, obj, parent) {
 
   // method below created to ensure that all values have been added to the objChild before
   // modifiers are linked (needed for objects)
-  node.runLinkModifiers(objName);
+  node.runLinkModifiers(objName); // this one is fine
   return node;
 }
 
@@ -205,11 +207,21 @@ function combineNodes(...args) {
 }
 
 // combineNodes(ButtState, NavState, AppState); // testing purposes
-// combineNodes(AppState); // testing purposes
+// combineNodes(AppState, NavState); // testing purposes
 // console.log("beginning case", silo.AppState.value.cart);
 // silo.AppState.value.cart.modifiers.addItem({two: 2});
+// silo.AppState.value.cart.modifiers.addItem({three: 3});
 
 // setTimeout(() => console.log("end case", silo.AppState.value.cart), 1000);
+
+// console.log(silo.AppState.getState());
+// silo.AppState.value.NavState.value.cart.subscribers.push((state) => {console.log('STATE', state)});
+// silo.AppState.value.NavState.value.cart.modifiers.addItem({two: 2});
+
+// silo.AppState.value.cart.modifiers.addItem({two: 3, five: 5});
+// setTimeout(() => {console.log('delay', silo.AppState.value.NavState.getState())}, 1000);
+// setTimeout(() => {console.log('Im adding', silo.AppState.value.NavState.getState().addItem({five: 5}))}, 1001);
+// setTimeout(() => {console.log('Im adding again', silo.AppState.value.NavState.getState().addItem({six: 6}))}, 1001);
 
 // ==========> TESTS that calling a parent function will modify its child for nested objects <========== \\
 
