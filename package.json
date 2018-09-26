@@ -4,7 +4,8 @@
   "description": "Radon is an object-oriented state management framework for JavaScript applications.",
   "main": "stateNode.js",
   "scripts": {
-    "test": "jest stateNode.test.js --watch"
+    "test": "jest stateNode.test.js --watch",
+    "test:combineNodes": "jest combineNodes.test.js --watch"
   },
   "repository": {
     "type": "git",
