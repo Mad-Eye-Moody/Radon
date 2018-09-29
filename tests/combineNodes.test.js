@@ -67,12 +67,12 @@ describe('The combineNodes function', () => {
     it('the root state should have a value with 3 keys', () => {
       expect(Object.keys(silo.AppState.value).length).toBe(3);
     })
-    it('subscribe function calls render once and enforces naming convention', () => {
-      const mockRender = jest.fn(sN => {});
-      silo.subscribe(mockRender, 'AppState');
-      expect(mockRender.mock.calls.length).toBe(1);
-      expect(() => silo.subscribe(mockRender, 'App')).toThrowError('You are trying to subscribe to something that isn\'t in the silo.');
-      expect(() => silo.subscribe()).toThrowError('Must pass parameters');
-    })
+    // it('subscribe function calls render once and enforces naming convention', () => {
+    //   const mockRender = jest.fn(sN => {});
+    //   silo.subscribe(mockRender, 'AppState');
+    //   expect(mockRender.mock.calls.length).toBe(1);
+    //   expect(() => silo.subscribe(mockRender, 'App')).toThrowError('You are trying to subscribe to something that isn\'t in the silo.');
+    //   expect(() => silo.subscribe()).toThrowError('Must pass parameters');
+    // })
   })
 })

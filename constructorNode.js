@@ -12,6 +12,7 @@ class ConstructorNode {
    * Adds variables to the state
    * @param {object} initialState - An object with keys as variable names and values of data
    */
+
   initializeState(initialState) {
     // make sure that the input is an object
     if (typeof initialState !== 'object' || Array.isArray(initialState)) throw new Error('Input must be an object');
@@ -29,6 +30,7 @@ class ConstructorNode {
    * Stores modifiers in state
    * @param {object} initialModifiers - An object with keys associated with existing initialized variables and values that are objects containing modifiers to be bound to that specific variable
    */
+  
   initializeModifiers(initialModifiers) {
     // make sure that the input is an object
     if (typeof initialModifiers !== 'object' || Array.isArray(initialModifiers)) throw new Error('Input must be an object');
@@ -71,44 +73,3 @@ class ConstructorNode {
 
 // export default ConstructorNode;
 module.exports = ConstructorNode;
-
-// developer side example
-
-// import State from _____
-
-// const AppState = new ConstructorNode(7, 'ParendNode');
-// // AppState.name = 'AppState'; -> optional if not set in constructor
-// // AppState.parent = 'ParentNode'; -> optional if not set in constructor
-
-// AppState.initializeState({
-//   name: 'Han',
-//   age: 25,
-//   cart: []
-// })
-
-// AppState.initializeModifiers({
-//   name: {
-//     updateName: (current, payload) => {
-//       return payload + current;
-//     },
-//     resetName: (current, payload) => {
-//       return null;
-//     }
-//   },
-//   age: {
-//     incrementAge: (current, payload) => {
-//       return current + 1;
-//     },
-//     decrementAge: (current, payload) => {
-//       return current - 1;
-//     }
-//   },
-//   cart: {
-//     incrementShirts: (current, index, payload) => {
-//       return ++current;
-//     },
-//     addItem: (current, payload) => {
-//       return current.push(payload);
-//     }
-//   }
-// });

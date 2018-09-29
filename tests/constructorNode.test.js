@@ -35,7 +35,7 @@ describe('Constructor Node Class', () => {
   })
 
   it('Constructor Node should only accept string as parent', () => {
-    expect(() => new ConstructorNode('test')).toThrowError();
+    expect(new ConstructorNode('test')).toBeTruthy();
     expect(() => new ConstructorNode('test', 8)).toThrowError();
     expect(() => new ConstructorNode('test', false)).toThrowError();
     expect(() => new ConstructorNode('test', {})).toThrowError();
