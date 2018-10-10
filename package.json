@@ -1,6 +1,6 @@
 {
   "name": "radon-js",
-  "version": "3.2.16",
+  "version": "3.2.22",
   "description": "Radon is an object-oriented state management framework for JavaScript applications.",
   "main": "build/bundle.js",
   "files": [
@@ -11,7 +11,7 @@
     "test:siloNode": "jest siloNode.test.js",
     "watch": "jest constructorNode.test.js --watch",
     "test:virtualSilo": "jest virtualSilo.test.js --watch",
-    "build": "./node_modules/.bin/rollup -c"
+    "build": "rollup -c"
   },
   "keywords": [
     "npm",

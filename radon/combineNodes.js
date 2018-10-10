@@ -196,15 +196,10 @@ silo.subscribe = (renderFunction, name) => {
     }
   })
 
-  function unsubscribe() {
-    let ob;
-    Object.keys(foundNodeChildren).forEach(key => {
-      ob = foundNodeChildren[key]; 
-      ob.node.removeFromSubscribersAtIndex(ob.index)
-    })
-  }
+  let unsubscribe;
   
   if (!!foundNode) {
+    
     
     if (foundNode.value) {
       Object.keys(foundNode.value).forEach(key => {
@@ -216,12 +211,26 @@ silo.subscribe = (renderFunction, name) => {
         }
       })
     }
+
+    unsubscribe = () =>  {
+      let ob;
+      Object.keys(foundNodeChildren).forEach(key => {
+        ob = foundNodeChildren[key]; 
+        ob._subscribers.splice(ob.index, 1)
+      })
+    }
+
+
     foundNode.notifySubscribers();
+    return unsubscribe;
+
   } else {
-    console.error(new Error(`You are trying to subscribe to ${name}, which isn\'t in the silo.`));
+    console.error(new Error('You are trying to subscribe to something that isn\'t in the silo.'));
+    return function errFunc () {
+      console.error(new Error('You are trying to run unsubscribe from something that wasn\'t in the silo in the first place.'))
+    }
   }
 
-  return unsubscribe;
 }
 
 export default combineNodes;
