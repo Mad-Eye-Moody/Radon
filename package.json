@@ -3,11 +3,14 @@
   "version": "3.2.22",
   "description": "Radon is an object-oriented state management framework for JavaScript applications.",
   "main": "build/bundle.js",
+  "typings": "types/index.d.ts",
   "files": [
-    "build"
+    "build",
+    "types/*.d.ts"
   ],
   "scripts": {
     "test": "jest",
+    "test:types": "tsc -p ./types/test/tsconfig.json",
     "test:siloNode": "jest siloNode.test.js",
     "watch": "jest constructorNode.test.js --watch",
     "test:virtualSilo": "jest virtualSilo.test.js --watch",
@@ -37,12 +40,15 @@
   "devDependencies": {
     "@babel/core": "^7.1.2",
     "@babel/preset-env": "^7.1.0",
+    "@types/node": "^10.11.7",
+    "@types/webpack": "^4.4.16",
     "babel-core": "^7.0.0-bridge.0",
     "babel-preset-es2015-rollup": "^3.0.0",
     "jest": "^23.6.0",
     "jest-cli": "^23.6.0",
     "rollup": "^0.66.2",
     "rollup-plugin-babel": "^4.0.3",
-    "rollup-plugin-uglify": "^6.0.0"
+    "rollup-plugin-uglify": "^6.0.0",
+    "typescript": "^3.1.3"
   }
 }
